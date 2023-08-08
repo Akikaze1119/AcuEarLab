@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ja"  class="h-100">
+
+<head>
+    <meta charset="utf-8">
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.7.11/dist/vue.js"></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="/assets/brand/acuearlab-icon.png">
+    <title>Game | AcuEarLab</title>
+    
+    <meta name="description" content="音声をよく聞いて、2つの英単語の中から正しいものを選んでください。正確に聴き分けることができるかテストしてみましょう！">
+
+    <meta property="og:url" content="https://acuearlab.web.app/>
+    <meta property="og:title" content="Game | AcuEarLab" />
+    <meta property="og:description" content=" 音声をよく聞いて、2つの英単語の中から正しいものを選んでください。正確に聴き分けることができるかテストしてみましょう！" />
+    <meta property="og:site_name" content="AcuEarLab" />
+    <meta property="og:image" content="https://acuearlab.web.app/assets/brand/acuearlab-ogp.png" />
+    
+    <!-- Custom styles for this template -->
+    <link href="earth.css" rel="stylesheet">
+    <link href="main.css" rel="stylesheet">
+    <link href="game.css" rel="stylesheet">
+
+</head>
+
+<body class="d-flex h-100 text-center">
+<div v-cloak>
+  <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <header class="mb-auto d-flex flex-wrap justify-content-center">
+      <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+        <img  class="bi me-2" width="40" height="32" src="./assets/brand/acuearlab-logo.png" alt="AcuEarLab ロゴ">
+        <span class="fs-4">AcuEarLab</span>
+      </a>
+    </header>
+  <div id="app" class="container">
+    <main class="px-3">
+    <div class="px-4 py-3 text-center">
+      
+      <!--スタート画面-->
+      <div class="" v-if="startFlg!=true">
+        <!--地球儀-->
+        <div class="earth mb-4 mx-auto"></div>
+        
+        <h1 class="display-5 fw-bold primary-color">Which is Correct?</h1>
+        <div class="mx-auto">
+          <p class="lead mb-4">音声をよく聞いて、2つの英単語の中から正しいものを選んでください。<br>正確に聴き分けることができるかテストしてみましょう！</p>
+          <div class="mb-2 d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <button type="button" class="startButton btn btn-primary btn-lg px-4 gap-3" @click="gameStart">START</button>
+          </div>
+        </div>
+      </div>
+
+ <!--ゲーム画面-->
+    <div v-if="startFlg">
+        <div class="d-flex align-items-center">
+          <a href="/" class="xmark-icon">
+            <i class="fa-solid fa-xmark gaugeXmark" style="color: #6c757d;"></i>
+          </a>
+          <div class="gaugeWrapper flex-grow-1">
+            <div v-bind:style="styleobject" class="gauge"></div>
+          </div>
+        </div>
+        <div class="mb-5" v-if="endFlg!=true">{{currentQuestionsCounts}}/{{questionCounts}}</div>
+        
+        <div v-if="endFlg!=true" class="QuestionWrapper">
+            <!--音声再生ボタン-->
+            <div class="soundButtonWrapper mb-5">
+                <button @click="readAloud" class="btn btn-primary btn-lg play-btn">
+                  <i class="fa-solid fa-circle-play"></i>
+                </button>
+            </div>
+            
+            <!--選択ボタン-->
+            <div class="container">
+              <div class="row optionsWrapper">
+                <div class="col-sm-12 col-md-6">
+                  <button class="btn btn-lg btn-outline-dark col option-btn mb-2" :disabled="answerButtonShow !== true" @click="optionA">
+                    <div class="btn-content">
+                      <span v-if="selectedOption === 'optionA'" class="check-mark">&#10004;</span>
+                      {{word1}}
+                    </div>
+                  </button>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                  <button class="btn btn-lg btn-outline-dark col option-btn" :disabled="answerButtonShow !== true" @click="optionB">
+                    <div class="btn-content">
+                      <span v-if="selectedOption === 'optionB'" class="check-mark">&#10004;</span>
+                      {{word2}}
+                    </div>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!--次へ進むボタン-->
+            <div v-if="answerButtonShow" class="mt-3 answerButtonWrapper"></div>
+            <div v-if="nextButtonShow" class="mt-3 result answerButtonWrapper">
+              <div class="p-3 mb-2" :class="{ 'alert-success': isCorrect, 'alert-danger': !isCorrect }">{{resultMessage}}</div>
+              <button class="btn btn-lg btn-success mt-3" @click="nextButton">Next</button>
+            </div>
+            </div>
+        </div>    
+    </div>
+
+    <!--結果画面-->
+    <div v-if="endFlg" class="quiz-result">
+      <div v-if="currentQuestionsCounts == questionCounts" class="clear fw-bold mb-3">Clear!!</div>
+      <h2 class="mb-3">Quiz Results <div>{{correctAnswers}}/{{questionCounts}}</div></h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Question</th>
+              <th>Correct Answer</th>
+              <th></th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in questionList" :key="index">
+              <td class="align-middle">{{ index + 1 }}</td>
+              <td class="align-middle">
+                <div>{{ item.question1 }}</div>
+                <div>{{ item.question2 }}</div>
+              </td>
+              <td class="align-middle">
+                {{ item.answer }}
+              </td>
+              <td class="align-middle">
+                <button @click="readAloudAnswer(item.id)" class="btn">
+                  <i class="fa-solid fa-circle-play" style="color: #0d6efd;"></i>
+                </button>
+              </td>
+              <td class="align-middle">
+                  <div v-if="item.isCorrect" class="text-success">&#10004;</div>
+                  <div v-else class="text-danger">&#10006;</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <p>You got {{ correctAnswers }} out of {{ questionCounts }} correct.</p>
+        <a class="btn btn-secondary" href="/" role="button">TOPへ戻る</a>
+    </div>
+    </div>
+  </main>
+</div>
+  <footer class="mt-auto">
+    <p></p>
+  </footer>
+</div>
+</div>
+    <script type="text/javascript" src="main.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v6.4.0/js/all.js"></script>
+
+
+</body>
+
+</html>

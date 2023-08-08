@@ -1,0 +1,39 @@
+/****** Base style. ******/
+*{
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+body {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}
+
+ul{
+    padding-left:0
+}
+
+li {
+    list-style:none
+}
+/****** End: Base style. ******/
+
+.primary-color{
+  color: #30C3DD;
+}
+
+.cover-container {
+  max-width: 42em;
+}
+
+.note{
+  color:#adb5bd;
+}
+
+.answerButtonWrapper{
+  height: 100px;
+}

@@ -1,0 +1,58 @@
+/****** ゲーム画面に関する設定 ******/
+.clear{
+    color:#30C3DD;
+    font-size: 44px;
+}
+
+.gauge{
+    height: 13px;
+    transition: all .3s ease;
+}
+
+.gaugeWrapper{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid;
+  height: 15px;
+  border-color: #e9ecef;
+  background-color: #e9ecef;
+}
+
+.gaugeXmark{
+    margin-right: 5px;
+    font-size:1.5em;
+}
+
+
+/****** 選択ボタンに関する設定 ******/
+.option-btn{
+  width: 160px;
+}
+
+.option-btn-selected {
+    box-shadow: 0 0 0 0.25rem rgba(33,37,41,.5);
+}
+
+
+.play-btn{
+  width: 160px;
+}
+
+.btn-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.check-mark {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+.answerButtonWrapper{
+  height:100px;
+}
